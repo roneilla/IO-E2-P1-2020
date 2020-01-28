@@ -1,68 +1,64 @@
-var mySpeech = new p5.Speech();
+// Terminal command to start server:  node ~/node_modules/p5.serialserver/startserver.js
 
-var anger, sad, fear, disgust, joy;
+
+// serial server variables
+var serial;
+var options = {
+    baudRate: 9600
+};
+var portName = '/dev/cu.usbmodem14101';
+var inData;
+var inText;
 
 function preload() {
-    anger = loadAnimation('/assets/Anger-1.png', 'assets/Anger-2.png');
-    sad = loadAnimation('/assets/Sad-1.png', 'assets/Sad-2.png');
-    fear = loadAnimation('/assets/Fear-1.png', 'assets/Fear-2.png');
-    disgust = loadAnimation('/assets/Disgust-1.png', 'assets/Disgust-2.png');
-    joy = loadAnimation('/assets/Joy-1.png', 'assets/Joy-2.png');
+
 }
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
+    background(125, 255, 200);
+    frameRate(120);
+
+    serial = new p5.SerialPort();
+    serial.on('data', serialEvent);
+    serial.on('error', serialError);
+    serial.open(portName, options);
+
+
 }
 
 function draw() {
-    background(245, 241, 233);
-    var offset = 100;
-    animation(anger, 100 + offset, height / 2);
-    animation(sad, 450 + offset, height / 2);
-    animation(fear, 750 + offset, height / 2);
-    animation(disgust, 1100 + offset, height / 2);
-    animation(joy, 1450 + offset, height / 2);
-
-    if (mouseX >= 25 && mouseX <= 250) {
-        anger.play();
-        mySpeech.speak('angry');
-    } else {
-        anger.stop();
+    background(100, 175, 75);
+    fill(0);
+    textAlign(CENTER);
+    //    text("Clearcutting in Canada", width / 2, height / 2 - 200);
+    textSize(40);
+    if (inData == undefined) {
+        inData = 0;
     }
-
-    if (mouseX >= 390 && mouseX <= 680) {
-        sad.play();
-        mySpeech.speak('sad');
-    } else {
-        sad.stop();
+    text("This is what the earth's forests looked like " + inData + " years ago", width / 2, height / 2 - 150);
+    for (var i = 0; i < inData; i++) {
+        fill(50, 125, 30);
+        ellipse(random(0, i + 20) + random(0, width), random(0, i + 20) + random(0, height), 50, 50);
     }
+    smooth();
+}
 
-    if (mouseX >= 680 && mouseX <= 1000) {
-        fear.play();
-        mySpeech.speak('fear');
+function serialEvent() {
+    var inString = serial.readStringUntil('\r\n');
 
-    } else {
-        fear.stop();
-    }
+    inData = inString;
 
-    if (mouseX >= 1100 && mouseX <= 1400) {
-        disgust.play();
-        mySpeech.speak('disgust');
+    //    inData = Math.floor(inData);
 
-    } else {
-        disgust.stop();
-    }
+    console.log(inData);
+}
 
-    if (mouseX >= 1400 && mouseX <= 1600) {
-        joy.play();
-        mySpeech.speak('joy');
-
-    } else {
-        joy.stop();
-    }
+function serialError(err) {
+    println('Something went wrong with the serial port. ' + err);
+}
 
 
+function restartFnc() {
 
-    textSize(50);
-    text("COLOR + EMOTIONS", width / 2 - 350, 50);
 }
