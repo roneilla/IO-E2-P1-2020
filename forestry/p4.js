@@ -29,18 +29,22 @@ function setup() {
 
 function draw() {
     background(100, 175, 75);
+    
     fill(0);
     textAlign(CENTER);
-    //    text("Clearcutting in Canada", width / 2, height / 2 - 200);
     textSize(40);
+    
     if (inData == undefined) {
         inData = 0;
     }
+    
     text("This is what the earth's forests looked like " + inData + " years ago", width / 2, height / 2 - 150);
+    
     for (var i = 0; i < inData; i++) {
         fill(50, 125, 30);
         ellipse(random(0, i + 20) + random(0, width), random(0, i + 20) + random(0, height), 50, 50);
     }
+    
     smooth();
 }
 
